@@ -102,6 +102,7 @@ public class ReaderUi {
                 String line;
                 StringBuilder content = new StringBuilder();
 
+
                 while ((line = reader.readLine()) != null) {
                     String[] fileArray = line.split("\n");
                     for (String item : fileArray) {
