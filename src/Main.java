@@ -1,5 +1,4 @@
 import org.w3c.dom.html.HTMLImageElement;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +11,6 @@ import java.io.IOException;
 import java.util.Calendar;
 
 public class Main {
-
     public static void main(String[] args) {
         //CSV = Comma-Separated values
         JFrame frame = new JFrame("Group 6 file reader");
