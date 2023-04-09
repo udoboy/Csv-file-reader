@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
@@ -12,14 +13,15 @@ public class ReaderUi {
     Color backgroundColor;
 
     JLabel contentLabel;
+    public JFrame frame = new JFrame("Group 6 " +
+            " reader");
+    public JPanel contentPanel = new JPanel();
 
-
-
-    public ReaderUi(){
+    public ReaderUi() {
         ImageIcon myIcon = new ImageIcon("src\\icon.png");
         backgroundColor = Color.decode("#18AA57");
 
-        JPanel mainPanel = new JPanel(new GridLayout(5,1, 10,10));
+        JPanel mainPanel = new JPanel(new GridLayout(5, 1, 10, 10));
         mainPanel.setBackground(backgroundColor);
 
         JLabel titleLabel = new JLabel("Csv Reader");
@@ -29,7 +31,7 @@ public class ReaderUi {
         JButton chooseButton = new JButton("Choose a file");
         chooseButton.setFocusable(false);
 
-        JPanel detailsPanel = new JPanel(new GridLayout(1,2));
+        JPanel detailsPanel = new JPanel(new GridLayout(1, 2));
         detailsPanel.setBackground(backgroundColor);
 
         filePathLabel = new JLabel("C:\\");
@@ -46,21 +48,15 @@ public class ReaderUi {
         mainPanel.add(detailsPanel);
 
         JPanel contentPanel = new JPanel();
-        contentPanel.setSize(new Dimension(200,200));
 
         contentLabel = new JLabel();
-        contentPanel.add(contentLabel);
-
-        JFrame frame = new JFrame("Group 6 " +
-                " reader");
-        frame.setMinimumSize(new Dimension(500,500));
+        frame.setMinimumSize(new Dimension(500, 500));
         frame.setLayout(new FlowLayout(FlowLayout.LEFT));
         frame.getContentPane().setBackground(backgroundColor);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setIconImage(myIcon.getImage());
         frame.add(mainPanel);
-        frame.add(contentPanel);
 
         frame.setVisible(true);
 
@@ -68,18 +64,17 @@ public class ReaderUi {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                   selectedFile =  FileHandler.load(frame);
-                   if (selectedFile != null){
-                       readBtn.setEnabled(true);
-                       String fileName = selectedFile.getName();
-                       filePathLabel.setText(fileName);
-                   }
-                   else{
-                       readBtn.setEnabled(false);
-                       filePathLabel.setText("C:\\");
-                   }
+                    selectedFile = FileHandler.load(frame);
+                    if (selectedFile != null) {
+                        readBtn.setEnabled(true);
+                        String fileName = selectedFile.getName();
+                        filePathLabel.setText(fileName);
+                    } else {
+                        readBtn.setEnabled(false);
+                        filePathLabel.setText("C:\\");
+                    }
                 } catch (Exception e) {
-                   // throw new RuntimeException(e);
+                    // throw new RuntimeException(e);
                     e.printStackTrace();
                 }
             }
@@ -94,29 +89,40 @@ public class ReaderUi {
 
     }
 
-    /** reads the content of the selected csv file and displays it**/
-    public void readCsv(File file){
-        if (file != null){
+    /** reads the content of the selected csv file and displays it **/
+
+
+    public void readCsv(File file) {
+        if (file != null) {
             String filePath = file.getAbsolutePath();
             BufferedReader reader = null;
-            String line = "";
-            String content="";
 
-            try{
+            try {
                 reader = new BufferedReader(new FileReader(filePath));
-                while ((line = reader.readLine()) != null){
-                    String[] row = line.split(",");
-                    for (String index: row){
-                        System.out.printf("%-10s", index);
+                String line;
+                StringBuilder content = new StringBuilder();
 
+
+                while ((line = reader.readLine()) != null) {
+                    String[] fileArray = line.split("\n");
+                    for (String item : fileArray) {
+                        String formattedLine = item.replace(",", "  \t");
+                        content.append(formattedLine).append("<br>");
                     }
-                    System.out.println();
+                    content.append("<br>");
                 }
-            }
-            catch (Exception e){
+
+                contentLabel.setText("<html>" + content + "</html>");
+                JScrollPane scrollPane = new JScrollPane(contentLabel);
+                scrollPane.setPreferredSize(new Dimension(300, 300));
+                contentPanel.add(scrollPane);
+                frame.add(contentPanel, BorderLayout.CENTER);
+                frame.revalidate();
+                frame.repaint();
+
+            } catch (Exception e) {
                 e.printStackTrace();
-            }
-            finally {
+            } finally {
                 try {
                     reader.close();
                 } catch (IOException e) {
@@ -124,7 +130,8 @@ public class ReaderUi {
                 }
             }
         }
-
     }
+
+
 
 }
