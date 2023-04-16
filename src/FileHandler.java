@@ -6,7 +6,7 @@ public class FileHandler {
      * it returns the selected file **/
     public static File load(JFrame window) throws IOException, ClassNotFoundException {
         JFileChooser jFileChooser = new JFileChooser();
-        jFileChooser.showDialog(window, "Choose a file");
+        jFileChooser.showDialog(window, "Select file");
         File selectedFile = jFileChooser.getSelectedFile();
         if (selectedFile != null){
             String filePath = selectedFile.getAbsolutePath();
